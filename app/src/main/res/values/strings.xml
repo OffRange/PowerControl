@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Power Control</string>
+
+    <string name="device">Device</string>
+    <string name="name">Name</string>
+    <string name="ip_address">IP Address</string>
+    <string name="mac_address">MAC Address</string>
+    <string name="password">Password</string>
+    <string name="shutdown_sequence">Shutdown Sequence</string>
+
+    <string name="name_blank">Name must not be blank</string>
+    <string name="ip_exists">This IP Address already exists in your list</string>
+    <string name="ip_invalid">This IP Address is invalid</string>
+    <string name="mac_invalid">This MAC Address is invalid</string>
+
+    <string name="no_devices_found">No devices found</string>
+    <string name="add_device">Add device</string>
+</resources>
