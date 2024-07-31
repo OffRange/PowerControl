@@ -1,6 +1,5 @@
 package de.davis.powercontrol.core.di
 
-import de.davis.powercontrol.core.domain.usecases.FormatIpAddressUseCase
 import de.davis.powercontrol.core.domain.usecases.FormatMacAddressUseCase
 import de.davis.powercontrol.core.domain.usecases.ShutdownUseCase
 import de.davis.powercontrol.core.domain.usecases.ValidateIpv4AddressUseCase
@@ -16,7 +15,6 @@ internal val coreUseCaseKoinModule = module {
     singleOf(::ValidatePartialIpv4AddressUseCase)
     singleOf(::ValidateMacAddressUseCase)
 
-    singleOf(::FormatIpAddressUseCase)
     singleOf(::FormatMacAddressUseCase)
 
     singleOf(::ShutdownUseCase)
