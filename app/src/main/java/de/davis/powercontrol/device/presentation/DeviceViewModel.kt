@@ -3,7 +3,6 @@ package de.davis.powercontrol.device.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.davis.powercontrol.core.domain.models.Device
-import de.davis.powercontrol.core.domain.usecases.FormatMacAddressUseCase
 import de.davis.powercontrol.core.domain.usecases.ValidatePartialIpv4AddressUseCase
 import de.davis.powercontrol.core.domain.usecases.ValidatePartialMacAddressUseCase
 import de.davis.powercontrol.device.domain.model.IpValidationResult
@@ -28,7 +27,6 @@ class DeviceViewModel(
     private val validateDevice: ValidateDeviceUseCase,
     private val validatePartialIpv4Address: ValidatePartialIpv4AddressUseCase,
     private val validatePartialMacAddress: ValidatePartialMacAddressUseCase,
-    private val formatMac: FormatMacAddressUseCase,
 ) : ViewModel() {
 
     private val _ipAddressFlow = MutableStateFlow("")
@@ -100,7 +98,7 @@ class DeviceViewModel(
             DeviceUiEvent.SubmitDevice -> {
                 viewModelScope.launch {
                     val device = state.value.device.let {
-                        it.copy(ip = it.ip, mac = it.mac?.let(formatMac::invoke))
+                        it.copy(ip = it.ip, mac = it.mac)
                     }
                     val errors = validateDevice(device)
 
