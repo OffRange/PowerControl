@@ -1,5 +1,6 @@
 package de.davis.powercontrol.core.di
 
+import de.davis.powercontrol.core.domain.usecases.GetDeviceStatusUseCase
 import de.davis.powercontrol.core.domain.usecases.ShutdownUseCase
 import de.davis.powercontrol.core.domain.usecases.ValidateIpv4AddressUseCase
 import de.davis.powercontrol.core.domain.usecases.ValidateMacAddressUseCase
@@ -18,6 +19,7 @@ internal val coreUseCaseKoinModule = module {
     singleOf(::ShutdownUseCase)
     singleOf(::WakeOnLanUseCase)
 
+    singleOf(::GetDeviceStatusUseCase)
 }
 
 val coreKoinModule = module {
