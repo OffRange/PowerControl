@@ -1,5 +1,6 @@
 package de.davis.powercontrol.core.domain.usecases
 
+import de.davis.powercontrol.core.domain.SHUTDOWN_BYTE
 import de.davis.powercontrol.core.domain.models.Device
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,7 +19,7 @@ class ShutdownUseCase {
         val buffer = ByteArray(1)
         datagramSocket {
             sendPacket(
-                data = byteArrayOf(device.shutdownSequence),
+                data = byteArrayOf(SHUTDOWN_BYTE, device.shutdownSequence),
                 serverAddress = inetAddress,
                 serverPort = device.port.toUShort()
             )
