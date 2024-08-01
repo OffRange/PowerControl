@@ -15,4 +15,8 @@
 
     <string name="no_devices_found">No devices found</string>
     <string name="add_device">Add device</string>
+
+    <string name="pending">Pending</string>
+    <string name="offline">Offline</string>
+    <string name="online">Online</string>
 </resources>

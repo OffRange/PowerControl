@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import de.davis.powercontrol.R
 import de.davis.powercontrol.core.domain.models.Device
-import de.davis.powercontrol.core.prenentation.Item
+import de.davis.powercontrol.core.prenentation.component.DeviceItem
 import de.davis.powercontrol.core.prenentation.koin.KoinInitiatedAppTheme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -43,10 +43,9 @@ private fun List(devices: ImmutableList<Device>, onInteract: (DeviceInteraction)
             items = devices,
             key = { it.ip }
         ) { device ->
-            Item(
+            DeviceItem(
                 modifier = Modifier.fillMaxWidth(),
-                title = device.name,
-                supportingText = device.ip,
+                device = device,
                 onClicked = {
                     onInteract(DeviceInteraction(device.ip, it))
                 }
