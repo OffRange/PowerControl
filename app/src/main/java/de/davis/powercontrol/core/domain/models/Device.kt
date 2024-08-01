@@ -13,7 +13,11 @@ data class Device(
     val mac: MacAddress? = null,
     val port: Int = DEFAULT_PORT,
     val password: HexString? = null,
-    val shutdownSequence: Byte = DEFAULT_SHUTDOWN_SEQUENCE
+    val shutdownSequence: Byte = DEFAULT_SHUTDOWN_SEQUENCE,
+    val status: DeviceStatus = DeviceStatus.Pending
 )
 
 val Device.uShutdownSequence get() = shutdownSequence.toUByte()
+
+val Device.couldAcceptOperations
+    get() = status == DeviceStatus.Online || (status == DeviceStatus.Offline && !mac.isNullOrBlank())
