@@ -19,4 +19,10 @@ class DeviceRepositoryImpl(private val deviceDao: DeviceDao) : DeviceRepository 
     override suspend fun upsertDevice(device: Device): Boolean {
         return deviceDao.create(device.toEntity()) > 0
     }
+
+    override suspend fun deleteDevice(ip: IpAddress) {
+        deviceDao.getByIpAddress(ip)?.let {
+            deviceDao.delete(it)
+        }
+    }
 }

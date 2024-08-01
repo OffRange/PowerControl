@@ -9,4 +9,5 @@ interface DeviceRepository {
     fun observeAllDevices(): Flow<List<Device>>
     suspend fun getDeviceByIp(ip: IpAddress): Device?
     suspend fun upsertDevice(device: Device): Boolean
+    suspend fun deleteDevice(ip: IpAddress)
 }

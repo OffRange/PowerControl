@@ -1,6 +1,7 @@
 package de.davis.powercontrol.device.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import de.davis.powercontrol.core.domain.`typealias`.IpAddress
@@ -21,4 +22,7 @@ interface DeviceDao {
 
     @Upsert
     suspend fun create(device: DeviceEntity): Long
+
+    @Delete
+    suspend fun delete(device: DeviceEntity)
 }

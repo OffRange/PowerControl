@@ -61,4 +61,10 @@ class DashboardViewModel(
             }
         }
     }
+
+    fun delete(ip: IpAddress) {
+        viewModelScope.launch {
+            deviceRepository.deleteDevice(ip)
+        }
+    }
 }
