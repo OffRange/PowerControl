@@ -2,16 +2,25 @@ package de.davis.powercontrol.dashboard.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.davis.powercontrol.core.domain.models.DeviceStatus
 import de.davis.powercontrol.core.domain.`typealias`.IpAddress
 import de.davis.powercontrol.core.domain.usecases.ShutdownUseCase
+import de.davis.powercontrol.core.domain.usecases.WakeOnLanUseCase
 import de.davis.powercontrol.device.domain.repository.DeviceRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class DashboardViewModel(
     private val shutdown: ShutdownUseCase,
+    private val boot: WakeOnLanUseCase,
     private val deviceRepository: DeviceRepository
 ) : ViewModel() {
 
