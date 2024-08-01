@@ -2,11 +2,12 @@ package de.davis.powercontrol.core.domain.usecases
 
 import de.davis.powercontrol.core.domain.SHUTDOWN_BYTE
 import de.davis.powercontrol.core.domain.models.Device
+import de.davis.powercontrol.core.domain.network.datagramSocket
+import de.davis.powercontrol.core.domain.network.mapper.toInetAddress
+import de.davis.powercontrol.core.domain.network.receivePacket
+import de.davis.powercontrol.core.domain.network.sendPacket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -14,14 +15,12 @@ import kotlin.time.DurationUnit
 class ShutdownUseCase {
 
     suspend operator fun invoke(device: Device): Boolean = withContext(Dispatchers.IO) {
-        val inetAddress = InetAddress.getByName(device.ip)
-
         val buffer = ByteArray(1)
         datagramSocket {
             sendPacket(
                 data = byteArrayOf(SHUTDOWN_BYTE, device.shutdownSequence),
-                serverAddress = inetAddress,
-                serverPort = device.port.toUShort()
+                serverAddress = device.ip.toInetAddress(),
+                port = device.port
             )
 
             val pack = receivePacket(buffer, TIMEOUT.toInt(DurationUnit.MILLISECONDS))
@@ -32,30 +31,5 @@ class ShutdownUseCase {
 
     companion object {
         val TIMEOUT: Duration = 5.seconds
-    }
-}
-
-private fun datagramSocket(block: DatagramSocket.() -> Unit) {
-    DatagramSocket().use(block)
-}
-
-private fun DatagramSocket.sendPacket(
-    data: ByteArray,
-    length: Int = data.size,
-    serverAddress: InetAddress,
-    serverPort: UShort
-) {
-    send(DatagramPacket(data, length, serverAddress, serverPort.toInt()))
-}
-
-private fun DatagramSocket.receivePacket(
-    buf: ByteArray,
-    timeout: Int
-): DatagramPacket {
-    soTimeout = timeout
-    return DatagramPacket(buf, buf.size).also {
-        runCatching {
-            receive(it)
-        }
     }
 }
