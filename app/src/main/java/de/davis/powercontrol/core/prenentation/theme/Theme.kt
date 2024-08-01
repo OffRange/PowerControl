@@ -12,12 +12,85 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+
+@Immutable
+data class ExtendedColorScheme(
+    val success: ColorFamily,
+)
+
+@Immutable
+data class ColorFamily(
+    val color: Color,
+    val onColor: Color,
+    val colorContainer: Color,
+    val onColorContainer: Color
+)
+
+val extendedLight = ExtendedColorScheme(
+    success = ColorFamily(
+        successLight,
+        onSuccessLight,
+        successContainerLight,
+        onSuccessContainerLight,
+    ),
+)
+
+val extendedDark = ExtendedColorScheme(
+    success = ColorFamily(
+        successDark,
+        onSuccessDark,
+        successContainerDark,
+        onSuccessContainerDark,
+    ),
+)
+
+val extendedLightMediumContrast = ExtendedColorScheme(
+    success = ColorFamily(
+        successLightMediumContrast,
+        onSuccessLightMediumContrast,
+        successContainerLightMediumContrast,
+        onSuccessContainerLightMediumContrast,
+    ),
+)
+
+val extendedLightHighContrast = ExtendedColorScheme(
+    success = ColorFamily(
+        successLightHighContrast,
+        onSuccessLightHighContrast,
+        successContainerLightHighContrast,
+        onSuccessContainerLightHighContrast,
+    ),
+)
+
+val extendedDarkMediumContrast = ExtendedColorScheme(
+    success = ColorFamily(
+        successDarkMediumContrast,
+        onSuccessDarkMediumContrast,
+        successContainerDarkMediumContrast,
+        onSuccessContainerDarkMediumContrast,
+    ),
+)
+
+val extendedDarkHighContrast = ExtendedColorScheme(
+    success = ColorFamily(
+        successDarkHighContrast,
+        onSuccessDarkHighContrast,
+        successContainerDarkHighContrast,
+        onSuccessContainerDarkHighContrast,
+    ),
+)
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -251,10 +324,17 @@ fun isContrastAvailable(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 }
 
+@Immutable
+private data class ExtendedAwareColorScheme(
+    val materialColorScheme: ColorScheme,
+    var extendedColorScheme: ExtendedColorScheme
+)
+
 @Composable
-fun selectSchemeForContrast(isDark: Boolean): ColorScheme {
+private fun selectSchemeForContrast(isDark: Boolean): ExtendedAwareColorScheme {
     val context = LocalContext.current
-    var colorScheme = if (isDark) darkScheme else lightScheme
+    var colorScheme = if (isDark) ExtendedAwareColorScheme(darkScheme, extendedDark)
+    else ExtendedAwareColorScheme(lightScheme, extendedLight)
     val isPreview = LocalInspectionMode.current
     // TODO(b/336693596): UIModeManager is not yet supported in preview
     if (!isPreview && isContrastAvailable()) {
@@ -262,16 +342,24 @@ fun selectSchemeForContrast(isDark: Boolean): ColorScheme {
         val contrastLevel = uiModeManager.contrast
 
         colorScheme = when (contrastLevel) {
-            in 0.0f..0.33f -> if (isDark)
-                darkScheme else lightScheme
+            in 0.0f..0.33f -> if (isDark) ExtendedAwareColorScheme(darkScheme, extendedDark)
+            else ExtendedAwareColorScheme(lightScheme, extendedLight)
 
-            in 0.34f..0.66f -> if (isDark)
-                mediumContrastDarkColorScheme else mediumContrastLightColorScheme
+            in 0.34f..0.66f -> if (isDark) ExtendedAwareColorScheme(
+                mediumContrastDarkColorScheme,
+                extendedDarkMediumContrast
+            ) else ExtendedAwareColorScheme(
+                mediumContrastLightColorScheme,
+                extendedLightMediumContrast
+            )
 
-            in 0.67f..1.0f -> if (isDark)
-                highContrastDarkColorScheme else highContrastLightColorScheme
+            in 0.67f..1.0f -> if (isDark) ExtendedAwareColorScheme(
+                highContrastDarkColorScheme,
+                extendedDarkHighContrast
+            ) else ExtendedAwareColorScheme(highContrastLightColorScheme, extendedLightHighContrast)
 
-            else -> if (isDark) darkScheme else lightScheme
+            else -> if (isDark) ExtendedAwareColorScheme(darkScheme, extendedDark)
+            else ExtendedAwareColorScheme(lightScheme, extendedLight)
         }
         return colorScheme
     } else return colorScheme
@@ -287,7 +375,8 @@ internal fun AppTheme(
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (darkTheme) ExtendedAwareColorScheme(dynamicDarkColorScheme(context), extendedDark)
+            else ExtendedAwareColorScheme(dynamicLightColorScheme(context), extendedLight)
         }
 
         else -> selectSchemeForContrast(isDark = darkTheme)
@@ -296,15 +385,33 @@ internal fun AppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = colorScheme.materialColorScheme.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(value = LocalExtendedColorScheme provides colorScheme.extendedColorScheme) {
+        MaterialTheme(
+            colorScheme = colorScheme.materialColorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }
 
+val LocalExtendedColorScheme = staticCompositionLocalOf<ExtendedColorScheme> {
+    error("CompositionLocal LocalExtendedColorScheme not present")
+}
+
+val MaterialTheme.extendedColorScheme: ExtendedColorScheme
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalExtendedColorScheme.current
+
+@Stable
+fun ColorFamily.contentColorFor(backgroundColor: Color): Color =
+    when (backgroundColor) {
+        color -> onColor
+        colorContainer -> onColorContainer
+        else -> Color.Unspecified
+    }
