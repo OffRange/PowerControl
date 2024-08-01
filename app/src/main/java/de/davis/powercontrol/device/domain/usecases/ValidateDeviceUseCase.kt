@@ -30,7 +30,7 @@ class ValidateDeviceUseCase(
                 add(IpValidationResult.IpInvalid)
 
             mac?.let {
-                if (!validateMacAddress(mac))
+                if (!validateMacAddress(it))
                     add(MacValidationResult.MacInvalid)
             }
         }
