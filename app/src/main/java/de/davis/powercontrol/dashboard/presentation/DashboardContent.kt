@@ -44,7 +44,9 @@ private fun List(devices: ImmutableList<Device>, onInteract: (DeviceInteraction)
             key = { it.ip }
         ) { device ->
             DeviceItem(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateItem(),
                 device = device,
                 onEvent = {
                     onInteract(DeviceInteraction(device.ip, it))
