@@ -46,7 +46,7 @@ private fun List(devices: ImmutableList<Device>, onInteract: (DeviceInteraction)
             DeviceItem(
                 modifier = Modifier.fillMaxWidth(),
                 device = device,
-                onClicked = {
+                onEvent = {
                     onInteract(DeviceInteraction(device.ip, it))
                 }
             )

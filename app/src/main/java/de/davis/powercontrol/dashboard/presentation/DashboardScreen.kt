@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import de.davis.powercontrol.R
 import de.davis.powercontrol.core.prenentation.Destination
-import de.davis.powercontrol.core.prenentation.ItemClickEvent
+import de.davis.powercontrol.core.prenentation.ItemEvent
 import de.davis.powercontrol.core.prenentation.koin.KoinInitiatedAppTheme
 import de.davis.powercontrol.device.presentation.Register
 import kotlinx.collections.immutable.toImmutableList
@@ -49,9 +49,10 @@ fun DashboardScreen(onNavigateEvent: (Destination) -> Unit) {
                 devices = devices.toImmutableList(),
                 onInteract = {
                     when (it.event) {
-                        ItemClickEvent.ItemShort -> onNavigateEvent(Register(it.ip))
-                        ItemClickEvent.ItemLong -> {}
-                        ItemClickEvent.Icon -> viewModel.bootOrShutdown(it.ip)
+                        ItemEvent.ItemShortClicked -> onNavigateEvent(Register(it.ip))
+                        ItemEvent.ItemLongClicked -> {}
+                        ItemEvent.IconClicked -> viewModel.bootOrShutdown(it.ip)
+                        ItemEvent.Delete -> viewModel.delete(it.ip)
                     }
                 }
             )
