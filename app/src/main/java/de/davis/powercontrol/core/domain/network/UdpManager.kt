@@ -12,7 +12,9 @@ fun DatagramSocket.sendPacket(
     serverAddress: InetAddress,
     port: Int
 ) {
-    send(DatagramPacket(data, length, serverAddress, port))
+    runCatching {
+        send(DatagramPacket(data, length, serverAddress, port))
+    }
 }
 
 fun DatagramSocket.receivePacket(
