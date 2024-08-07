@@ -24,7 +24,7 @@ fun InitiateKoin(appDeclaration: KoinAppDeclaration = {}, content: @Composable (
     KoinRotationConsistentApplication(
         application = {
             androidLogger()
-            androidContext(context)
+            androidContext(context.applicationContext)
 
             modules(deviceKoinModule, dashboardKoinModule, coreKoinModule)
 
