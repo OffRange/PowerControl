@@ -63,14 +63,14 @@ fun DeviceItem(
         mutableStateOf(false)
     }
 
-    val c = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
 
     val state = rememberSwipeToDismissBoxState(
         confirmValueChange = {
             when (it) {
                 SwipeToDismissBoxValue.EndToStart -> {
                     isRemoved = true
-                    c.launch {
+                    coroutineScope.launch {
                         delay(500)
                         onEvent(ItemEvent.Delete)
                     }
