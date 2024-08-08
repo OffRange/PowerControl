@@ -14,7 +14,8 @@ data class Device(
     val port: Int = DEFAULT_PORT,
     val password: HexString? = null,
     val shutdownSequence: Byte = DEFAULT_SHUTDOWN_SEQUENCE,
-    val status: DeviceStatus = DeviceStatus.Pending
+    val status: DeviceStatus = DeviceStatus.Pending,
+    val scheduledOperation: ScheduledOperation = ScheduledOperation.None
 )
 
 val Device.uShutdownSequence get() = shutdownSequence.toUByte()

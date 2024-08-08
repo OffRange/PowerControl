@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -39,11 +40,14 @@ import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.davis.powercontrol.R
 import de.davis.powercontrol.core.domain.models.Device
 import de.davis.powercontrol.core.domain.models.DeviceStatus
+import de.davis.powercontrol.core.domain.models.PowerOperation
+import de.davis.powercontrol.core.domain.models.ScheduledOperation
 import de.davis.powercontrol.core.domain.models.couldAcceptOperations
 import de.davis.powercontrol.core.prenentation.ItemEvent
 import de.davis.powercontrol.core.prenentation.theme.AppTheme
@@ -51,6 +55,7 @@ import de.davis.powercontrol.core.prenentation.theme.contentColorFor
 import de.davis.powercontrol.core.prenentation.theme.extendedColorScheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -170,6 +175,33 @@ fun DeviceItem(
                             Text(text = stringResource(id = statusText))
                         }
                         Text(text = ip, modifier = Modifier.alignByBaseline())
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        if (device.scheduledOperation is ScheduledOperation.Scheduled)
+                            Badge(
+                                modifier = Modifier.alignByBaseline(),
+                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            ) {
+
+                                val operationName = when (device.scheduledOperation.operation) {
+                                    PowerOperation.Boot -> R.string.boot
+                                    PowerOperation.Shutdown -> R.string.shutdown
+                                    PowerOperation.Restart -> R.string.reboot
+                                    PowerOperation.Logout -> R.string.logout
+                                }
+
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.scheduled_operation,
+                                        stringResource(id = operationName),
+                                        device.scheduledOperation.time.hour,
+                                        device.scheduledOperation.time.minute
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                     }
                 },
                 trailingContent = {
@@ -193,7 +225,16 @@ fun DeviceItem(
 fun ItemPreview() {
     AppTheme(darkTheme = true) {
         DeviceItem(
-            device = Device(1, "Test", "192.168.1.1", status = DeviceStatus.Online),
+            device = Device(
+                1,
+                "Test",
+                "192.168.1.1",
+                status = DeviceStatus.Online,
+                scheduledOperation = ScheduledOperation.Scheduled(
+                    operation = PowerOperation.Boot,
+                    time = LocalDateTime.now()
+                )
+            ),
             onEvent = {}
         )
     }
