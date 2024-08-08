@@ -19,4 +19,16 @@
     <string name="pending">Pending</string>
     <string name="offline">Offline</string>
     <string name="online">Online</string>
+
+    <string name="select_time">Select a time</string>
+    <string name="schedule">Schedule</string>
+    <string name="when">When?</string>
+    <string name="now">Now</string>
+
+    <string name="scheduled_operation">%s \u2022 %02d:%02d</string>
+
+    <string name="boot">Boot</string>
+    <string name="shutdown">Shutdown</string>
+    <string name="reboot">Reboot</string>
+    <string name="logout">Logout</string>
 </resources>
