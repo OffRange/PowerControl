@@ -14,7 +14,7 @@ composeBom = "2024.06.00"
 immutableCollections = "0.3.7"
 ksp = "2.0.10-1.0.24"
 room = "2.6.1"
-semver = "0.2.4"
+semver = "0.2.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
