@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId = "de.davis.powercontrol"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
