@@ -29,7 +29,7 @@ class ValidateDeviceUseCase(
             if (!validateIp4Address(ip))
                 add(IpValidationResult.IpInvalid)
 
-            mac?.let {
+            mac.takeIf(String::isNotBlank)?.let {
                 if (!validateMacAddress(it))
                     add(MacValidationResult.MacInvalid)
             }

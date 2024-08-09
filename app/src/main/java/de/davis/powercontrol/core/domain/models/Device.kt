@@ -10,7 +10,7 @@ data class Device(
     val id: Long = 0,
     val name: String = "",
     val ip: IpAddress = "",
-    val mac: MacAddress? = null,
+    val mac: MacAddress = "",
     val port: Int = DEFAULT_PORT,
     val password: HexString? = null,
     val shutdownSequence: Byte = DEFAULT_SHUTDOWN_SEQUENCE,
