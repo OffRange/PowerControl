@@ -68,7 +68,7 @@ class DashboardViewModel(
                     is DialogType.ScheduleDialog -> {
                         dialogType.copy(
                             availablePowerOperations = if (state.value.devices.find { device -> device.ip == dialogType.ip }?.status == DeviceStatus.Online) {
-                                PowerOperation.entries.filter { entry -> entry != PowerOperation.Shutdown }
+                                PowerOperation.entries.filter { entry -> entry != PowerOperation.Boot }
                                     .toImmutableList()
                             } else {
                                 persistentListOf(PowerOperation.Boot)
