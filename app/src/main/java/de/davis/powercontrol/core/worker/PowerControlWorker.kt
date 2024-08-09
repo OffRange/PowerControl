@@ -14,6 +14,7 @@ import de.davis.powercontrol.core.domain.models.PowerOperation
 import de.davis.powercontrol.core.domain.`typealias`.IpAddress
 import de.davis.powercontrol.core.domain.usecases.GetDeviceStatusUseCase
 import de.davis.powercontrol.core.domain.usecases.LogoutUseCase
+import de.davis.powercontrol.core.domain.usecases.RestartUseCase
 import de.davis.powercontrol.core.domain.usecases.ShutdownUseCase
 import de.davis.powercontrol.core.domain.usecases.WakeOnLanUseCase
 import de.davis.powercontrol.device.domain.repository.DeviceRepository
@@ -29,6 +30,7 @@ class PowerControlWorker(context: Context, workerParams: WorkerParameters) :
     private val shutdown: ShutdownUseCase by inject()
     private val boot: WakeOnLanUseCase by inject()
     private val logout: LogoutUseCase by inject()
+    private val restart: RestartUseCase by inject()
 
     private val getDeviceStatus: GetDeviceStatusUseCase by inject()
     private val deviceRepository: DeviceRepository by inject()
@@ -51,10 +53,8 @@ class PowerControlWorker(context: Context, workerParams: WorkerParameters) :
                     boot(device)
             }
 
-            PowerOperation.Restart -> {}
-            PowerOperation.Logout -> {
-                logout(device)
-            }
+            PowerOperation.Restart -> restart(device)
+            PowerOperation.Logout -> logout(device)
         }
 
         Result.success()

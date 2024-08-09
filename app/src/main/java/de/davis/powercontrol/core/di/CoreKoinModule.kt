@@ -4,6 +4,7 @@ import androidx.work.WorkManager
 import de.davis.powercontrol.core.domain.usecases.GetDeviceStatusUseCase
 import de.davis.powercontrol.core.domain.usecases.GetScheduledOperationUseCase
 import de.davis.powercontrol.core.domain.usecases.LogoutUseCase
+import de.davis.powercontrol.core.domain.usecases.RestartUseCase
 import de.davis.powercontrol.core.domain.usecases.ShutdownUseCase
 import de.davis.powercontrol.core.domain.usecases.ValidateIpv4AddressUseCase
 import de.davis.powercontrol.core.domain.usecases.ValidateMacAddressUseCase
@@ -25,6 +26,7 @@ internal val coreUseCaseKoinModule = module {
     singleOf(::ShutdownUseCase)
     singleOf(::WakeOnLanUseCase)
     singleOf(::LogoutUseCase)
+    singleOf(::RestartUseCase)
 
     singleOf(::GetDeviceStatusUseCase)
 
