@@ -22,7 +22,8 @@
 
     <string name="select_time">Select a time</string>
     <string name="schedule">Schedule</string>
-    <string name="when">When?</string>
+    <string name="dialog_select_operation_title">Select Operation and Schedule</string>
+    <string name="dialog_select_operation_message">Choose the operation you would like to perform. If you select \'Schedule\', you can set a specific time for your device to execute the chosen operation.</string>
     <string name="now">Now</string>
 
     <string name="scheduled_operation">%s \u2022 %02d:%02d</string>
