@@ -56,6 +56,8 @@ import de.davis.powercontrol.core.prenentation.theme.extendedColorScheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -195,8 +197,8 @@ fun DeviceItem(
                                     text = stringResource(
                                         id = R.string.scheduled_operation,
                                         stringResource(id = operationName),
-                                        device.scheduledOperation.time.hour,
-                                        device.scheduledOperation.time.minute
+                                        DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+                                            .format(device.scheduledOperation.time)
                                     ),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
