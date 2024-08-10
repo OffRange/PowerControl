@@ -61,7 +61,10 @@ class PowerControlWorker(context: Context, workerParams: WorkerParameters) :
     }
 
 
-    companion object {
+    companion object : KoinComponent {
+
+        private val workManager by inject<WorkManager>()
+
         private const val BASE_WORK_NAME = "PowerControlWorker"
         const val IP_KEY = "ip"
         const val OPERATION_KEY = "operation"
@@ -71,8 +74,7 @@ class PowerControlWorker(context: Context, workerParams: WorkerParameters) :
         fun schedule(
             operation: PowerOperation,
             ip: IpAddress,
-            initialDelay: Long,
-            workManager: WorkManager
+            initialDelay: Long
         ) {
             val workRequest = OneTimeWorkRequestBuilder<PowerControlWorker>().apply {
                 setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
@@ -97,7 +99,7 @@ class PowerControlWorker(context: Context, workerParams: WorkerParameters) :
             )
         }
 
-        fun cancel(ip: IpAddress, workManager: WorkManager) {
+        fun cancel(ip: IpAddress) {
             workManager.cancelUniqueWork(ip.asWorkerName())
         }
     }

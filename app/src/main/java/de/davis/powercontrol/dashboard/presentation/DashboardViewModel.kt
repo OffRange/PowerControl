@@ -2,7 +2,6 @@ package de.davis.powercontrol.dashboard.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkManager
 import de.davis.powercontrol.core.domain.models.DeviceStatus
 import de.davis.powercontrol.core.domain.models.PowerOperation
 import de.davis.powercontrol.core.domain.models.Schedule
@@ -29,7 +28,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class DashboardViewModel(
-    private val workManager: WorkManager,
     private val getDeviceStatus: GetDeviceStatusUseCase,
     private val getScheduledOperation: GetScheduledOperationUseCase,
     private val deviceRepository: DeviceRepository
@@ -64,7 +62,7 @@ class DashboardViewModel(
 
     fun iconClicked(ip: IpAddress) {
         if (state.value.devices.find { device -> device.ip == ip }?.scheduledOperation is ScheduledOperation.Scheduled) {
-            PowerControlWorker.cancel(ip, workManager)
+            PowerControlWorker.cancel(ip)
         } else {
             updateDialog(DialogType.ScheduleDialog(ip))
         }
@@ -96,8 +94,7 @@ class DashboardViewModel(
             PowerControlWorker.schedule(
                 operation = operation,
                 ip = ip,
-                initialDelay = schedule.getRemainingTime(),
-                workManager = workManager
+                initialDelay = schedule.getRemainingTime()
             )
         }
     }
