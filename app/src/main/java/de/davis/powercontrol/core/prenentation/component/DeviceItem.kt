@@ -2,6 +2,12 @@ package de.davis.powercontrol.core.prenentation.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -12,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PowerSettingsNew
@@ -36,6 +43,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -161,7 +172,50 @@ fun DeviceItem(
                         }
 
                         Badge(
-                            modifier = Modifier.alignByBaseline(),
+                            modifier = Modifier
+                                .alignByBaseline()
+                                .then(
+                                    if (status == DeviceStatus.Online) {
+                                        val infiniteTransition =
+                                            rememberInfiniteTransition(label = "infinite-transition")
+                                        val animateFloat by infiniteTransition.animateFloat(
+                                            initialValue = 0f,
+                                            targetValue = 360f,
+                                            animationSpec = infiniteRepeatable(
+                                                tween(1500, easing = LinearEasing),
+                                                repeatMode = RepeatMode.Restart
+                                            ),
+                                            label = "animate-status-badge"
+                                        )
+
+                                        val color1 =
+                                            MaterialTheme.extendedColorScheme.success.colorContainer
+                                        val color2 =
+                                            MaterialTheme.extendedColorScheme.success.onColorContainer
+
+                                        Modifier
+                                            .clip(CircleShape)
+                                            .padding(1.dp)
+                                            .drawWithContent {
+                                                rotate(animateFloat) {
+                                                    drawCircle(
+                                                        brush = Brush.sweepGradient(
+                                                            listOf(
+                                                                color1,
+                                                                color2,
+                                                                color1,
+                                                                color2,
+                                                                color1
+                                                            )
+                                                        ),
+                                                        radius = size.width,
+                                                        blendMode = BlendMode.SrcIn,
+                                                    )
+                                                }
+                                                drawContent()
+                                            }
+                                    } else Modifier
+                                ),
                             containerColor = containerColor,
                             contentColor = MaterialTheme.extendedColorScheme.success.contentColorFor(
                                 containerColor
@@ -180,9 +234,10 @@ fun DeviceItem(
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        if (device.scheduledOperation is ScheduledOperation.Scheduled)
+                        if (device.scheduledOperation is ScheduledOperation.Scheduled) {
                             Badge(
-                                modifier = Modifier.alignByBaseline(),
+                                modifier = Modifier
+                                    .alignByBaseline(),
                                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                             ) {
 
@@ -204,6 +259,7 @@ fun DeviceItem(
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
+                        }
                     }
                 },
                 trailingContent = {
