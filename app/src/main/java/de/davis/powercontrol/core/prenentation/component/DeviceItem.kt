@@ -1,5 +1,6 @@
 package de.davis.powercontrol.core.prenentation.component
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AlarmOff
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material3.Badge
@@ -267,10 +269,20 @@ fun DeviceItem(
                         onClick = { onEvent(ItemEvent.IconClicked) },
                         enabled = couldAcceptOperations
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.PowerSettingsNew,
-                            contentDescription = null
-                        )
+                        AnimatedContent(
+                            targetState = isScheduled(scheduledOperation),
+                            label = "DeviceItem power icon"
+                        ) {
+                            val icon = when (it) {
+                                true -> Icons.Default.AlarmOff
+                                else -> Icons.Default.PowerSettingsNew
+                            }
+
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
             )

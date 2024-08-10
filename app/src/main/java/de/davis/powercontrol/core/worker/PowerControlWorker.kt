@@ -96,5 +96,9 @@ class PowerControlWorker(context: Context, workerParams: WorkerParameters) :
                 workRequest
             )
         }
+
+        fun cancel(ip: IpAddress, workManager: WorkManager) {
+            workManager.cancelUniqueWork(ip.asWorkerName())
+        }
     }
 }
