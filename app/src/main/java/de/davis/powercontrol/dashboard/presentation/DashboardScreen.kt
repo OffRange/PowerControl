@@ -60,9 +60,7 @@ fun DashboardScreen(onNavigateEvent: (Destination) -> Unit) {
                     when (it.event) {
                         ItemEvent.ItemShortClicked -> onNavigateEvent(Register(it.ip))
                         ItemEvent.ItemLongClicked -> {}
-                        ItemEvent.IconClicked -> viewModel.updateDialog(
-                            DialogType.ScheduleDialog(it.ip)
-                        )
+                        ItemEvent.IconClicked -> viewModel.iconClicked(it.ip)
 
                         ItemEvent.Delete -> viewModel.delete(it.ip)
                     }

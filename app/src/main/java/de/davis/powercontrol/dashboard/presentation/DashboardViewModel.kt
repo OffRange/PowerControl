@@ -6,6 +6,7 @@ import androidx.work.WorkManager
 import de.davis.powercontrol.core.domain.models.DeviceStatus
 import de.davis.powercontrol.core.domain.models.PowerOperation
 import de.davis.powercontrol.core.domain.models.Schedule
+import de.davis.powercontrol.core.domain.models.ScheduledOperation
 import de.davis.powercontrol.core.domain.models.getRemainingTime
 import de.davis.powercontrol.core.domain.`typealias`.IpAddress
 import de.davis.powercontrol.core.domain.usecases.GetDeviceStatusUseCase
@@ -60,6 +61,14 @@ class DashboardViewModel(
     val state = combine(_devices, _dialogType) { devices, dialogType ->
         DashboardState(devices.toImmutableList(), dialogType)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, DashboardState())
+
+    fun iconClicked(ip: IpAddress) {
+        if (state.value.devices.find { device -> device.ip == ip }?.scheduledOperation is ScheduledOperation.Scheduled) {
+            PowerControlWorker.cancel(ip, workManager)
+        } else {
+            updateDialog(DialogType.ScheduleDialog(ip))
+        }
+    }
 
     fun updateDialog(dialogType: DialogType) {
         viewModelScope.launch {
