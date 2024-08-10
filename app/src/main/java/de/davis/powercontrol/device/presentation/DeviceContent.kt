@@ -115,7 +115,7 @@ fun DeviceContent(deviceState: DeviceState, onEvent: (DeviceUiEvent) -> Unit) {
             )
 
             TextField(
-                value = deviceState.device.mac ?: "",
+                value = deviceState.device.mac,
                 onValueChange = {
                     onEvent(DeviceUiEvent.MacAddressChanged(it))
                 },
