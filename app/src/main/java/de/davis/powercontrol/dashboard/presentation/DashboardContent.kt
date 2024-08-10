@@ -41,7 +41,7 @@ private fun List(devices: ImmutableList<Device>, onInteract: (DeviceInteraction)
     LazyColumn {
         items(
             items = devices,
-            key = { it.ip }
+            key = { it.id }
         ) { device ->
             DeviceItem(
                 modifier = Modifier
